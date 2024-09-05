@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+        sampleFunctionClick = ()=>{
+            const inputElement = document.getElementById("sample-input");
+            const htmlToOutput = `the text you entered is: ${inputElement.value}`;
+            const outputElement = document.getElementById("sample-output");
+            outputElement.innerHTML = htmlToOutput;
+        }
+    </script>
+</head>
+
+<body>
+    <h2>JavaScript Sample</h2>
+    <button onClick="sampleFunctionClick()">run sample function</button>
+    <br />
+    <input id="sample-input"/>
+    <br />
+    <p id="sample-output" />
+</body>
+
+</html>
