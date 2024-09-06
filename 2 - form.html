@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <h2>JavaScript Sample</h2>
+    <div>the main reason to use a form these days is so you can press "enter" to call the submit button</div>
+    <br />
+    <form id="sample-form">
+        <label for="sample-input">Input Label</label>
+        <input id="sample-input" name="sampleInput" placeholder="sample input" />
+        <br />
+        <label for="sample-checkbox">Checkbox Label</label>
+        <input type="checkbox" id="sample-checkbox" name="thisThing" />
+        <br />
+        <input type="submit" value="submit the thing pls" />
+    </form>
+    <br />
+    <p id="sample-output" />
+
+    <script>
+        // this script must appear after the controls it is getting, 
+        // otherwise it tries to get them before they have been rendered
+        const formElement = document.getElementById("sample-form");
+        onSubmitFunction = (event) => {
+            //get the input element from the page
+            const inputElement = document.getElementById("sample-input");
+            //get the checkbox element from the page
+            const checkboxElement = document.getElementById("sample-checkbox");
+            const htmlToOutput = `the text you entered is: "${inputElement.value}" and you the box is ${checkboxElement.checked ? "" : "not "}checked`;
+            const outputElement = document.getElementById("sample-output");
+            outputElement.innerHTML = htmlToOutput;
+        }
+        // Take over form submission
+        formElement.addEventListener("submit", (event) => {
+            event.preventDefault();//this prevents the page from refreshing after submit
+            onSubmitFunction(event);
+        });
+    </script>
+</body>
+
+</html>
