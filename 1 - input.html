@@ -3,7 +3,8 @@
 
 <head>
     <script>
-        sampleFunctionClick = ()=>{
+        sampleFunctionClick = () => {
+            console.log(`running the function "sampleFunctionClick"`)
             const inputElement = document.getElementById("sample-input");
             const htmlToOutput = `the text you entered is: ${inputElement.value}`;
             const outputElement = document.getElementById("sample-output");
@@ -16,7 +17,7 @@
     <h2>JavaScript Sample</h2>
     <button onClick="sampleFunctionClick()">run sample function</button>
     <br />
-    <input id="sample-input"/>
+    <input id="sample-input" />
     <br />
     <p id="sample-output" />
 </body>
