@@ -60,6 +60,8 @@
                 resultsElement.innerHTML = "searching...";
                 const jsonResults = await getData(fetchUrl);
                 resultsHtml = jsonResults.map((result, i) => { // i is an index added to each element by the map() function 
+                   console.log(result);
+                   const detailsHtml = ``
                     return `<li key=${i}>${result.name}</div>`;
                 })
                 const resultsListHtml = `<ul>${resultsHtml}</ul>`;
