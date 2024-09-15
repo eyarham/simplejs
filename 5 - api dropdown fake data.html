@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <h2>JavaScript Sample</h2>
+    <div>this example pulls the dropdown values from a mock api call. when you submit the data, it adds it to a mock dataset, which you can view.</div>
+    <br />
+    <form id="sample-form">
+        Name: <input id="text-input" />
+        <br />
+        Selection: <select id="dropdown-input"></select>
+        <br />
+        <input id="submit-button" type="submit" value="submit" />
+        <br />
+        <input id="show-all-button" type="button" onclick="showAllData()" value="show all objects" />
+    </form>
+    <br />
+    <div id="query-output"></div>
+    <div id="results-info-output"></div>
+    <div id="results-output"></div>
+    <div id="show-all-output"></div>
+
+
+    <script>
+        // this script must appear after the controls it is getting, 
+        // otherwise it tries to get them before they have been rendered
+        const formElement = document.getElementById("sample-form");
+        const dropdownElement = document.getElementById("dropdown-input");
+        const textInputElement = document.getElementById("text-input");
+        const showAllElement = document.getElementById("show-all-button");
+        const showAllOutputElement = document.getElementById("show-all-output");
+        let mockServerData = [];
+        const getFakeDropdownData = (limit) => {//limit determines how many to return
+            const fakeData = [
+                {
+                    name: "object 1",
+                    id: 0,
+                    detail: "this is the first object"
+                },
+
+                {
+                    name: "object 2",
+                    id: 1,
+                    detail: "this is the second object"
+                },
+
+                {
+                    name: "object 3",
+                    id: 2,
+                    detail: "this is the third object"
+                },
+
+                {
+                    name: "object 4",
+                    id: 3,
+                    detail: "this is the fourth object"
+                }
+            ]
+            const limitedData = fakeData.slice(0, limit);//reduces it to the limit specified
+            return { count: limitedData.length, data: limitedData }//adds a count field
+        }
+        const mockSubmit = (data) => {
+            console.log("received request with data");
+            console.log(data);
+            const newId = mockServerData.length === 0 ? 0 : Math.max(...mockServerData.map(o => o.id)) + 1
+            const newObject = { id: newId, name: data.name, selection: data.selection }
+            mockServerData.push(newObject);
+            return { status: "success", data: newObject }
+        }
+        const getHtmlListFromData = (data) => {
+            let detailsHtml = "";
+            for (const key in data) {//this goes through all the fields and adds them by key and value
+                detailsHtml += (`<li key=${key}>${key}: ${data[key]}</li>`);
+            }
+            return detailsHtml
+        }
+        const getHtmlListFromDataArray = (data) => {//returns a string of <li> tags with the data in them
+            let listObjectsHtml = "";
+            data.map((result, i) => { // i is an index added to each element by the map() function 
+                console.log(result);
+                const detailsHtml = getHtmlListFromData(result);
+                listObjectsHtml += `<li key=${i}><div>${result.name}<ul>${detailsHtml}<ul/></div></li>`;
+
+            })
+            return listObjectsHtml;
+        }
+        const onSubmitFunction = async (event) => {
+            //get the input element from the page
+
+            const outputElement = document.getElementById("query-output");
+            const resultsInfoElement = document.getElementById("results-info-output");
+            const resultsElement = document.getElementById("results-output");
+            showAllOutputElement.innerHTML = "";
+            //do the search
+            const buttonElement = document.getElementById("submit-button");
+            try {
+                buttonElement.disabled = true;
+                resultsElement.innerHTML = "processing...";
+                const jsonResults = mockSubmit({ name: textInputElement.value, selection: dropdownElement.selectedOptions[0].value })
+                let listObjectsHtml = getHtmlListFromData(jsonResults.data);
+                const resultsListHtml = `<p>successfully inserted:</p><ul>${listObjectsHtml}</ul>`;
+                resultsElement.innerHTML = resultsListHtml;
+                buttonElement.disabled = false;
+            }
+            catch (error) {//if an error is thrown within the "try" block, this "catch" block will run
+                console.error(error);
+                resultsElement.innerHTML = `there was an error running the request: ${error.message}`;
+                buttonElement.disabled = false;
+            }
+        }
+
+        const showAllData = () => {
+            const listObjectsHtml = getHtmlListFromDataArray(mockServerData);
+            showAllOutputElement.innerHTML = `<p>Total data submitted:</p><ul>${listObjectsHtml}</ul>`;
+        }
+        const getDropdownInnerHtml = (data) => {
+            const htmlString = data.map((d, i) => `<option key=${i} value=${d.id}>${d.name}</option>`)
+            return htmlString;
+        }
+
+        const dropdownData = getFakeDropdownData();
+        dropdownElement.innerHTML = getDropdownInnerHtml(dropdownData.data);
+        // Take over form submission
+        formElement.addEventListener("submit", (event) => {
+            event.preventDefault();//this prevents the page from refreshing after submit
+            onSubmitFunction(event);
+        });
+    </script>
+</body>
+
+</html>
